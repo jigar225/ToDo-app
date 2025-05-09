@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 
@@ -15,7 +14,7 @@ class TodoBloc extends HydratedBloc<TodoEvent, TodoState> {
     on<RemoveTodo>(_onRemoveTodo);
     on<AlterTodo>(_onAlterTodo);
   }
-
+//i used Hydrated bloc to store and get back data of user
   void _onStarted(TodoStarted event, Emitter<TodoState> emit) {
     log("Todo Started");
     log("${state.status}");
