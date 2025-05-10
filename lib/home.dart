@@ -36,10 +36,12 @@ const HomeScreen({super.key});
               padding: const EdgeInsets.all(8),
               child: BlocBuilder<TodoBloc, TodoState>(
                 builder: (context, state) {
+                  final displayTodos = state.filteredTodos;
+                  debugPrint("$displayTodos}");
                   if (state.status == TodoStatus.success) {
                     return ListView.builder(
-                      itemCount: state.todos.length,
-                      itemBuilder: (context, i) => TodoCard(index: i, todo: state.todos[i]),
+                      itemCount: displayTodos.length,
+                      itemBuilder: (context, i) => TodoCard(index: i, todo: displayTodos[i]),
                     );
                   } else if (state.status == TodoStatus.initial) {
                     return const Center(child: CircularProgressIndicator());

@@ -20,6 +20,7 @@ class SearchBarWidget extends StatelessWidget {
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
         ),
         onChanged: (query) {
+          debugPrint("query is:$query");
           context.read<TodoBloc>().add(SearchQueryChanged(query));
         },
       ),

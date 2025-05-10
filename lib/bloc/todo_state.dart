@@ -14,7 +14,15 @@ class TodoState extends Equatable {
   });
 
   TodoState copyWith({TodoStatus? status, List<Todo>? todos,String? searchQuery}) {
+    debugPrint("Search query in copywith :$searchQuery");
     return TodoState(todos: todos ?? this.todos, status: status ?? this.status,searchQuery: searchQuery ?? this.searchQuery);
+  }
+  List<Todo> get filteredTodos {
+    debugPrint("search query is: ${searchQuery}");
+    if (searchQuery.isEmpty) return todos;  // If the search query is empty, return the full todo list.
+    return todos
+        .where((todo) => todo.title.toLowerCase().contains(searchQuery.toLowerCase()))
+        .toList();
   }
 
   factory TodoState.fromJson(Map<String,dynamic>json){
@@ -23,7 +31,6 @@ class TodoState extends Equatable {
       return TodoState(
         todos: listOfTodos,
         status: TodoStatus.values.firstWhere((element)=> element.name.toString() == json['status']),
-          searchQuery: json['searchQuery'] ?? '',
       );
     }catch(e){
       rethrow;
@@ -33,9 +40,8 @@ class TodoState extends Equatable {
    return {
      'todo':todos,
      'status':status.name,
-     'searchQuery': searchQuery
    };
   }
   @override
-  List<Object?> get props => [todos,status];
+  List<Object?> get props => [todos,status,searchQuery];
 }

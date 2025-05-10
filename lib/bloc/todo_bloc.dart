@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:equatable/equatable.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 
 import '../model/todo.dart';
@@ -20,7 +21,7 @@ class TodoBloc extends HydratedBloc<TodoEvent, TodoState> {
   void _onStarted(TodoStarted event, Emitter<TodoState> emit) {
     log("Todo Started");
     log("${state.status}");
-    if (state.status == TodoStatus.success) return;
+    if (state.status == TodoStatus.success || state.todos.isNotEmpty) return;
       emit(state.copyWith(todos: state.todos, status: TodoStatus.success));
   }
 
