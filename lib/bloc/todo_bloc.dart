@@ -13,6 +13,8 @@ class TodoBloc extends HydratedBloc<TodoEvent, TodoState> {
     on<AddTodo>(_onAddTodo);
     on<RemoveTodo>(_onRemoveTodo);
     on<AlterTodo>(_onAlterTodo);
+    on<SearchQueryChanged>(_onSearchQueryChanged);
+    on<ModifyTodo>(_onModifyTodo);
   }
 //i used Hydrated bloc to store and get back data of user
   void _onStarted(TodoStarted event, Emitter<TodoState> emit) {
@@ -94,6 +96,25 @@ class TodoBloc extends HydratedBloc<TodoEvent, TodoState> {
     }
     log("completed");
   }
+
+  void _onSearchQueryChanged(SearchQueryChanged event, Emitter<TodoState> emit) {
+    emit(state.copyWith(
+      searchQuery: event.query.toLowerCase(),
+      status: TodoStatus.success,
+    ));
+  }
+
+  void _onModifyTodo(ModifyTodo event,Emitter<TodoState> emit){
+    emit(state.copyWith(status: TodoStatus.loading));
+    try{
+      List<Todo> updatedTodos = List.from(state.todos);
+      updatedTodos[event.index] = event.updatedTodo;
+      emit(state.copyWith(todos: updatedTodos, status: TodoStatus.success));
+    }catch(e){
+      emit(state.copyWith(status: TodoStatus.error));
+    }
+  }
+
 
 
   @override

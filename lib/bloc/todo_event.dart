@@ -30,3 +30,21 @@ class AlterTodo extends TodoEvent{
   @override
   List<Object?> get props => [index];
 }
+
+class SearchQueryChanged extends TodoEvent {
+  final String query;
+  const SearchQueryChanged(this.query);
+
+  @override
+  List<Object?> get props => [query];
+}
+
+class ModifyTodo extends TodoEvent {
+  final int index;
+  final Todo updatedTodo;
+
+  const ModifyTodo({required this.index, required this.updatedTodo});
+
+  @override
+  List<Object?> get props => [index, updatedTodo];
+}
