@@ -4,6 +4,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
 import '../bloc/todo_bloc.dart';
 import '../model/todo.dart';
+import 'add_todo_dailog.dart';
 
 class TodoCard extends StatelessWidget {
   final int index;
@@ -33,6 +34,25 @@ class TodoCard extends StatelessWidget {
               icon: Icons.delete,
               label: 'Delete',
             ),
+            SlidableAction(
+              onPressed: (_) {
+                showDialog(
+                  context: context,
+                  builder: (_) => BlocProvider.value(
+                    value: context.read<TodoBloc>(),
+                    child: AddTodoDialog(
+                      isEdit: true,
+                      todo: todo,
+                      index: index,
+                    ),
+                  ),
+                );
+              },
+              backgroundColor: Colors.blue,
+              foregroundColor: Colors.white,
+              icon: Icons.edit,
+              label: 'Edit',
+            ),
           ],
         ),
         child: ClipRRect(
@@ -45,13 +65,26 @@ class TodoCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(todo.title,
-                        style: const TextStyle(fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
+                      Text(
+                        todo.title,
+                        style: TextStyle(
+                            fontSize: 20, color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          decoration: todo.isDone ? TextDecoration.lineThrough : TextDecoration.none,
+                          decorationColor: Colors.white,
+                          decorationThickness: 2.5,
+                        ),
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
                       ),
                       const SizedBox(height: 4),
-                      Text(todo.subtitle, style: const TextStyle(color: Colors.white70)),
+                      Text(todo.subtitle,
+                          style:  TextStyle(
+                              color: Colors.white70,
+                            decoration: todo.isDone ? TextDecoration.lineThrough : TextDecoration.none,
+                            decorationColor: Colors.white,
+                            decorationThickness: 2.5,
+                          )),
                       if (todo.dueDate != null) ...[
                         const SizedBox(height: 4),
                         Text(

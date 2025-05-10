@@ -5,7 +5,16 @@ import '../model/todo.dart';
 import '../utils/date_formatter.dart';
 
 class AddTodoDialog extends StatefulWidget {
-  const AddTodoDialog({super.key});
+  final bool isEdit;
+  final Todo? todo;
+  final int? index;
+
+  const AddTodoDialog({
+    super.key,
+    this.isEdit = false,
+    this.todo,
+    this.index,
+  });
 
   @override
   State<AddTodoDialog> createState() => _AddTodoDialogState();
@@ -16,21 +25,46 @@ class _AddTodoDialogState extends State<AddTodoDialog> {
   final TextEditingController _descController = TextEditingController();
   DateTime? _selectedDate;
 
-  void _addTodo() {
-    context.read<TodoBloc>().add(AddTodo(
-      Todo(
-        title: _titleController.text,
-        subtitle: _descController.text,
-        dueDate: _selectedDate,
-      ),
-    ));
+  @override
+  void initState() {
+    super.initState();
+    if (widget.isEdit && widget.todo != null) {
+      _titleController.text = widget.todo!.title;
+      _descController.text = widget.todo!.subtitle;
+      _selectedDate = widget.todo!.dueDate;
+    }
+  }
+
+  void _saveTodo() {
+    if (widget.isEdit) {
+      context.read<TodoBloc>().add(
+        ModifyTodo(
+          index: widget.index!,
+          updatedTodo: Todo(
+            title: _titleController.text,
+            subtitle: _descController.text,
+            dueDate: _selectedDate,
+            isDone: widget.todo?.isDone ?? false,
+          ),
+        ),
+      );
+    } else {
+      context.read<TodoBloc>().add(AddTodo(
+        Todo(
+          title: _titleController.text,
+          subtitle: _descController.text,
+          dueDate: _selectedDate,
+        ),
+      ));
+    }
+
     Navigator.pop(context);
   }
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text("Add a Task"),
+      title: Text(widget.isEdit ? "Edit Task" : "Add a Task"),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -74,7 +108,7 @@ class _AddTodoDialogState extends State<AddTodoDialog> {
         Padding(
           padding: const EdgeInsets.all(5),
           child: TextButton(
-            onPressed: _addTodo,
+            onPressed: _saveTodo,
             style: TextButton.styleFrom(
               shape: RoundedRectangleBorder(
                 side: const BorderSide(color: Colors.black),
